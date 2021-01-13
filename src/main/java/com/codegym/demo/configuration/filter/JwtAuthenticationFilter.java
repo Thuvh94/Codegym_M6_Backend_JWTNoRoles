@@ -28,9 +28,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
+            System.out.println("jwt là: " + jwt);
+            System.out.println("jwt validate jwt token là " + jwtService.validateJwtToken(jwt));
             if (jwt != null && jwtService.validateJwtToken(jwt)) {
                 String username = jwtService.getUserNameFromJwtToken(jwt);
-
                 UserDetails userDetails = userService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null);
@@ -47,11 +48,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String getJwtFromRequest(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
-
+        System.out.println("authHeader là : ");
+        System.out.println("authHeader bắt đầu với bearer: ");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.replace("Bearer ", "");
+            String afterReplace = authHeader.replace("Bearer ", "");
+            System.out.println("sau khi replace "+ afterReplace);
+            return afterReplace;
         }
-
         return null;
     }
 }
